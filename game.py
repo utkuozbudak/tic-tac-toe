@@ -20,6 +20,12 @@ DEFAULT_PLAYERS = (
 
 class TicTacToeGame():
     def __init__(self, players=DEFAULT_PLAYERS, board_size=BOARD_SIZE):
+        """ Constructor.
+
+        Args:
+            players (Player, optional): Players objects. Defaults to DEFAULT_PLAYERS.
+            board_size (int, optional): Size of the game board. Defaults to BOARD_SIZE.
+        """
         self.players = cycle(players)
         self.board_size = board_size
         self.current_player = next(self.players)
@@ -39,6 +45,9 @@ class TicTacToeGame():
         self._winning_combos = self._get_winning_combos()
     
     def _get_winning_combos(self):
+        """ 
+        Find the game winning combinations.
+        """
         rows = [
             [(move.row, move.column) for move in row]
             for row in self._current_moves
@@ -49,12 +58,25 @@ class TicTacToeGame():
         return rows + columns + [first_diagonal, second_diagonal]
     
     def is_valid_move(self, move):
+        """ Check if a move is valid.
+
+        Args:
+            move (Move): Currently played Move.
+
+        Returns:
+            bool: return true if there is no winner and move is played on an empty cell. Else return false.
+        """
         row, col = move.row, move.column
         is_move_played = self._current_moves[row][col].label == ""
         is_winner = not self._has_winner
         return is_winner and is_move_played
     
     def process_move(self, move):
+        """ Processing of the move.
+
+        Args:
+            move (Move): Currently player Move.
+        """
         row, col = move.row, move.column
         self._current_moves[row][col] = move
         for combo in self._winning_combos:
@@ -72,6 +94,11 @@ class TicTacToeGame():
         return self._has_winner
     
     def is_tie(self):
+        """ Check if there is a tie.
+
+        Returns:
+            bool: returns true if there is no winner and there is no any cells left to play.
+        """
         no_winner = not self._has_winner
         played_moves = (
             move.label for row in self._current_moves for move in row
@@ -79,4 +106,7 @@ class TicTacToeGame():
         return no_winner and all(played_moves)
     
     def toggle_player(self):
+        """
+        Toggle to the next player for the next move.
+        """
         self.current_player = next(self.players)
